@@ -1,4 +1,6 @@
-package com.example.dailycostapp;
+package com.app.dailycostapp;
+
+import com.app.dailycostapp.R;
 
 import android.os.Bundle;
 import android.app.Activity;
