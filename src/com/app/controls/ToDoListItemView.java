@@ -47,7 +47,13 @@ public class ToDoListItemView extends TextView {
 	@Override
 	public void onDraw(Canvas canvas){
 		canvas.drawColor(paperColor);
-		canvas.drawLine(0, 0, getMeasuredHeight(), 0, linePaint);
-		canvas.drawLine(0, getMeasuredHeight(), getMeasuredHeight(), getMeasuredWidth(), linePaint);
+		canvas.drawLine(0, 0, 0, getMeasuredHeight(), linePaint);
+		canvas.drawLine(0, getMeasuredHeight(), getMeasuredWidth(), getMeasuredHeight(), linePaint);
+		canvas.drawLine(margin, 0, margin, getMeasuredHeight(), marginPaint);
+		canvas.save();
+		canvas.translate(margin, 0);
+		
+		super.onDraw(canvas);
+		canvas.restore();
 	}
 }
