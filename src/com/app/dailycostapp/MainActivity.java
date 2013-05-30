@@ -1,14 +1,22 @@
 package com.app.dailycostapp;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.Menu;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.app.dailycostapp.R;
+import com.app.dao.ProjectDao;
+import com.app.database.DBHelper;
+import com.app.models.Project;
 
 public class MainActivity extends Activity {
 
@@ -28,6 +36,17 @@ public class MainActivity extends Activity {
 		arrToDo.add("a");
 		arrToDo.add("b");
 		arrToDo.add("c");
+		arrAdpt.notifyDataSetChanged();
+		
+		ProjectDao projDao = new ProjectDao(this);
+		Project proj = new Project();
+		proj.ProjectName = "lxl";
+		proj.Remark = "";
+		projDao.add(proj);
+		List<Project> lstProj = projDao.getList();
+		for(int i = 0;i < lstProj.size(); i++){
+			arrToDo.add(lstProj.get(i).ProjectName);
+		}
 		arrAdpt.notifyDataSetChanged();
 	}
 

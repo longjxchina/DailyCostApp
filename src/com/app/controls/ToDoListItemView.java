@@ -1,6 +1,7 @@
 package com.app.controls;
 
 import com.app.dailycostapp.R;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
