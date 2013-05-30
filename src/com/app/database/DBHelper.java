@@ -16,6 +16,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
     final static int DB_VERSION = 1;
     final static String DB_NAME = "dailycost";
+    final static String CREATE_TABLE_DAILY = "CREATE TABLE Daily(Id integer PRIMARY KEY AUTOINCREMENT,Theme varchar(200) NULL,Cost float NOT NULL,AddTime timestamp NULL,Remark varchar(250)  NULL,FinanceType integer NULL,CreateBy varchar(50)  NULL,LastUpdateBy varchar(50)  NULL,LastUpdateDate timestamp NULL CONSTRAINT DF_tbDaily_LastUpdateDate  DEFAULT (getdate()),ForDate date NULL,ProjectId integer NOT NULL)";
+    final static String CREATE_TABLE_DICT = "CREATE TABLE Dict(DictID integer PRIMARY KEY AUTOINCREMENT,Code varchar(50)  NULL,DictName nvarchar(100)  NULL,Remark nvarchar(500)  NULL,IsEnable boolean NULL,CreateBy varchar(50)  NULL,CreateDate timestamp NULL,CreatorName nvarchar(100)  NULL,LastUpdateBy varchar(50)  NULL,LastUpdateByName nvarchar(100)  NULL,LastUpdateDate timestamp NULL)";
+    final static String CREATE_TABLE_DICT_ITEM = "CREATE TABLE DictItems(DictItemID integer PRIMARY KEY AUTOINCREMENT,DictCode varchar(50)  NULL,ItemCode varchar(50)  NULL,ItemName nvarchar(100)  NULL,ItemValue nvarchar(200)  NULL,Remark nvarchar(500)  NULL,IsEnable boolean NULL,CreateBy varchar(50)  NULL,CreatorName nvarchar(100)  NULL,CreateDate timestamp NULL,LastUpdateBy varchar(50)  NULL,LastUpdateByName nvarchar(100)  NULL,LastUpdateDate timestamp NULL)";
+    final static String CREATE_TABLE_PROJECT = "CREATE TABLE Project(Id integer PRIMARY KEY AUTOINCREMENT,Name nvarchar(100)  NULL,Remark nvarchar(1000)  NULL)";
     Context context;
 
     public  DBHelper(Context context){
@@ -27,7 +31,14 @@ public class DBHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		// TODO Auto-generated method stub
-		initDataBase(db, "create.sql");
+		createTable(db);
+	}
+
+	private void createTable(SQLiteDatabase db) {
+		db.execSQL(CREATE_TABLE_DAILY);
+		db.execSQL(CREATE_TABLE_DICT);
+		db.execSQL(CREATE_TABLE_DICT_ITEM);
+		db.execSQL(CREATE_TABLE_PROJECT);
 	}
 
 	private void initDataBase(SQLiteDatabase db, String sqlFile) {

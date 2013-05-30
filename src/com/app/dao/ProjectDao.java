@@ -20,8 +20,8 @@ public class ProjectDao {
 	}
 	
 	public void add(Project proj){
-		db.execSQL("insert into project(projectname,remark) values(?,?)", 
-					new Object[]{ proj.ProjectName, proj.Remark });
+		db.execSQL("insert into project(name,remark) values(?,?)", 
+					new Object[]{ proj.Name, proj.Remark });
 	}
 	
 	public List<Project> getList() {  
@@ -31,7 +31,7 @@ public class ProjectDao {
         	Project proj = new Project();  
             
         	proj.Id = c.getInt(c.getColumnIndex("Id"));
-        	proj.ProjectName = c.getString(c.getColumnIndex("ProjectName"));
+        	proj.Name = c.getString(c.getColumnIndex("Name"));
         	proj.Remark = c.getString(c.getColumnIndex("Remark"));
         	
         	arrProjs.add(proj);

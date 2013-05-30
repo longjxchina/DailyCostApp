@@ -40,12 +40,12 @@ public class MainActivity extends Activity {
 		
 		ProjectDao projDao = new ProjectDao(this);
 		Project proj = new Project();
-		proj.ProjectName = "lxl";
+		proj.Name = "lxl";
 		proj.Remark = "";
 		projDao.add(proj);
 		List<Project> lstProj = projDao.getList();
 		for(int i = 0;i < lstProj.size(); i++){
-			arrToDo.add(lstProj.get(i).ProjectName);
+			arrToDo.add(lstProj.get(i).Name);
 		}
 		arrAdpt.notifyDataSetChanged();
 	}
