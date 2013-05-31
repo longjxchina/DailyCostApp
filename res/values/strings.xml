@@ -4,5 +4,9 @@
     <string name="app_name">DailyCost</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-
+	<string name="sync_dict_url">Hello world!</string>
+	<string name="sync_dict_items_url">Hello world!</string>
+	<string name="sync_project_url">http://www.baidu.com</string>
+	<string name="sync_base_data">同步基础数据</string>
+	<string name="locca">http://10.97.17.239:9090/json.txt</string>
 </resources>
