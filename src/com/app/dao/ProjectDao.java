@@ -20,8 +20,12 @@ public class ProjectDao {
 	}
 	
 	public void add(Project proj){
-		db.execSQL("insert into project(name,remark) values(?,?)", 
-					new Object[]{ proj.Name, proj.Remark });
+		db.execSQL("insert into project(id, name,remark) values(?,?,?)", 
+					new Object[]{proj.Id, proj.Name, proj.Remark });
+	}
+	
+	public void emptyData(){
+		db.execSQL("delete from project");
 	}
 	
 	public List<Project> getList() {  
@@ -38,7 +42,7 @@ public class ProjectDao {
         }  
         c.close();  
         return arrProjs;  
-    }  
+    }
 	
 	/** 
      * query all Project, return cursor 
