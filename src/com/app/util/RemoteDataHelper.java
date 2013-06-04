@@ -3,14 +3,17 @@ package com.app.util;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,30 +22,7 @@ import android.util.Log;
 
 public class RemoteDataHelper {
 	private static final String TAG = "RemoteDataHelper";
-	
-	/*
-	 * 从远程获取json数据
-	 */
-	public static JSONObject doGet(String url) {
-		try {
-			String result = null;
-			DefaultHttpClient httpClient = new DefaultHttpClient();
-
-			HttpGet request = new HttpGet(url);
-			request.addHeader("Accept", "application/json");
-			HttpResponse response = httpClient.execute(request);
-			result = EntityUtils.toString(response.getEntity());
-			JSONObject object = new JSONObject(result);
-			Log.i("HttpActivity", result);
-			
-			return object;
-		} catch (Exception e) {
-			Log.i("HttpActivity", "连接失败！详细错误：" + e.getMessage());
-		}
-
-		return null;
-	}
-	
+		
 	/**
 	 * 获取json内容
 	 * @param  url
@@ -63,6 +43,13 @@ public class RemoteDataHelper {
 	 */
 	public static JSONArray getJSONArray(String url) throws JSONException, Exception {		
 		return new JSONArray(getRequest(url));
+	}
+	
+	/*
+	 * 发送POST请求
+	 */
+	public static JSONObject postReturnJSON(String url, List<NameValuePair> data) throws JSONException, Exception {		
+		return new JSONObject(postRequest(url, data));
 	}
 	
 	/**
@@ -101,6 +88,43 @@ public class RemoteDataHelper {
 			throw new Exception(e);
 		} finally {
 			getMethod.abort();
+		}
+		return result;
+	}
+	
+	public static String postRequest(String url,List<NameValuePair> parameters) throws Exception {
+		return postRequest(url, parameters, new DefaultHttpClient());
+	}
+	
+	/*
+	 * 向api发送post请求，返回从后台取得的信息。
+	 */
+	protected static String postRequest(String url,List<NameValuePair> parameters, DefaultHttpClient client) throws Exception {
+		String result = null;
+		int statusCode = 0;
+		HttpPost postMethod = new HttpPost(url);
+		UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters, "utf-8");
+		
+		Log.d(TAG, "do the postRequest,url="+url+"");
+		
+		try {
+			postMethod.setHeader("Accept", "application/json");
+			
+			// 把实体数据设置到请求对象
+			postMethod.setEntity(entity);
+			
+			HttpResponse httpResponse = client.execute(postMethod);
+			
+			//statusCode == 200 正常
+			statusCode = httpResponse.getStatusLine().getStatusCode();
+			Log.d(TAG, "statuscode = "+statusCode);
+			//处理返回的httpResponse信息
+			result = retrieveInputStream(httpResponse.getEntity());
+		} catch (Exception e) {
+			Log.e(TAG, e.getMessage());
+			throw new Exception(e);
+		} finally {
+			postMethod.abort();
 		}
 		return result;
 	}

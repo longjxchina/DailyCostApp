@@ -1,67 +1,55 @@
 package com.app.dailycostapp;
 
-import java.util.ArrayList;
+import java.util.List;
+
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import com.app.dailycostapp.R;
+import com.app.models.Daily;
+import com.app.service.DailyService;
 import com.app.service.DictItemsService;
 import com.app.service.DictService;
 import com.app.service.ProjectService;
 import com.app.util.Common;
+import com.app.util.CommonListAdapter;
 
 public class MainActivity extends Activity implements OnClickListener  {
-	ArrayList<String> arrToDo;
-	ArrayAdapter<String> arrAdpt;
+	ListView lvToDo;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
+		lvToDo = (ListView)findViewById(R.id.lvToDo);
+		
 		noticeWifiStatus();
-		
-		ListView lvToDo = (ListView)findViewById(R.id.lvToDo);
-		arrToDo = new ArrayList<String>();
-		arrAdpt = new ArrayAdapter<String>(this,
-											R.layout.todo_list,
-											arrToDo);
-		
-		lvToDo.setAdapter(arrAdpt);	
-		
-		arrToDo.add("a");
-		arrAdpt.notifyDataSetChanged();
-		
-//		ProjectService svc = new ProjectService(this);		
-//		List<Project> lstProj = svc.getList();
-//		
-//		for (Project proj : lstProj){
-//			arrToDo.add(proj.Name);
-//		}
-//		
-//		arrAdpt.notifyDataSetChanged();
-//		com.app.dao.ProjectDao prodDao = new com.app.dao.ProjectDao(this);
-//		com.app.models.Project proj = new com.app.models.Project();
-//		proj.Id=3;
-//		proj.Name="测试数据3";
-//		com.app.models.Project proj2 = new com.app.models.Project();
-//		proj2.Id=4;
-//		proj2.Name="测试数据4";
-//		prodDao.add(proj);
-//		prodDao.add(proj2);
+		bindDaily();		
 		
 		ImageButton imgSyncBaseData = (ImageButton)findViewById(R.id.imgSyncBaseData);
 		ImageButton imgBtnNew = (ImageButton)findViewById(R.id.imgBtnAddDaily);
+		ImageButton imgBtnUpload = (ImageButton)findViewById(R.id.imgBtnUpload);
 		
 		imgSyncBaseData.setOnClickListener(this);
 		imgBtnNew.setOnClickListener(this);
+		imgBtnUpload.setOnClickListener(this);
+		
+		// TODO 列表的删除，数据修改
+	}
+
+	private void bindDaily() {
+		DailyService dailySvc = new DailyService(this);
+		List<Daily> lstData = dailySvc.getList();
+		CommonListAdapter<Daily> arrAdpt = new CommonListAdapter<Daily>(this,
+											lstData);
+		
+		lvToDo.setAdapter(arrAdpt);
 	}
 
 	@Override
@@ -79,9 +67,25 @@ public class MainActivity extends Activity implements OnClickListener  {
 			case R.id.imgBtnAddDaily:
 				AddDaily();
 				break;
+			case R.id.imgBtnUpload:
+				UploadData();
+				break;
 		}
 	}
 	
+	private void UploadData() {
+		final String syncUrl = this.getString(R.string.sync_daily);
+		final DailyService dailySvc = new DailyService(this);
+		
+		Runnable access = new Runnable() {			
+			public void run() {
+				dailySvc.UpdateLoadData(syncUrl);
+			}
+		};
+		
+		new Thread(access).start();
+	}
+
 	private void AddDaily() {
 		Intent intent = new Intent(this, DailyAdd.class);
 		startActivity(intent);
@@ -111,8 +115,7 @@ public class MainActivity extends Activity implements OnClickListener  {
 			}
 		};
 		
-		new Thread(access).start();
-		arrAdpt.notifyDataSetChanged();
+		new Thread(access).start();		
 	}
 	
 	private void noticeWifiStatus() {

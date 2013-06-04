@@ -25,16 +25,40 @@
         android:id="@+id/spTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-	
-    <DatePicker
-        android:id="@+id/dpAddDate"
+
+    <TextView
+        android:id="@+id/tvForDate"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:hint="@string/date"
+        android:textIsSelectable="true" />
+    
+    <EditText
+        android:id="@+id/etForDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/date"
+        android:inputType="date" />
+
+    <TextView
+        android:id="@+id/tvFinanceType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/finance_type" />
 
     <Spinner
         android:id="@+id/spFinanceType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/etMoney"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/money" 
+        android:inputType="numberDecimal"/>
 
     <EditText
         android:id="@+id/etRemark"

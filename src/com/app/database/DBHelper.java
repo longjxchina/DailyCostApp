@@ -1,12 +1,6 @@
 package com.app.database;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.content.Context;
-import android.content.res.AssetManager;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -30,7 +24,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		// TODO Auto-generated method stub
 		createTable(db);
 	}
 
@@ -41,40 +34,40 @@ public class DBHelper extends SQLiteOpenHelper {
 		db.execSQL(CREATE_TABLE_PROJECT);
 	}
 
-	private void initDataBase(SQLiteDatabase db, String sqlFile) {
-		// TODO Auto-generated method stub
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		byte buf[] = new byte[1024];
-	    int len;
-	    AssetManager assetManager = context.getAssets();
-	    InputStream inputStream = null;
-	    
-	    try{
-	        inputStream = assetManager.open(sqlFile);
-	        while ((len = inputStream.read(buf)) != -1) {
-	            outputStream.write(buf, 0, len);
-	        }
-	        outputStream.close();
-	        inputStream.close();
-	             
-	        String[] createScript = outputStream.toString().split(";");
-	        for (int i = 0; i < createScript.length; i++) {
-	                String sqlStatement = createScript[i].trim();
-	            // TODO You may want to parse out comments here
-	            if (sqlStatement.length() > 0) {
-	                db.execSQL(sqlStatement + ";");
-	            }
-	        }
-	    } catch (IOException e){
-	        // TODO Handle Script Failed to Load
-	    } catch (SQLException e) {
-	        // TODO Handle Script Failed to Execute
-	    }
-	}
+//	private void initDataBase(SQLiteDatabase db, String sqlFile) {
+//		
+//		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//		byte buf[] = new byte[1024];
+//	    int len;
+//	    AssetManager assetManager = context.getAssets();
+//	    InputStream inputStream = null;
+//	    
+//	    try{
+//	        inputStream = assetManager.open(sqlFile);
+//	        while ((len = inputStream.read(buf)) != -1) {
+//	            outputStream.write(buf, 0, len);
+//	        }
+//	        outputStream.close();
+//	        inputStream.close();
+//	             
+//	        String[] createScript = outputStream.toString().split(";");
+//	        for (int i = 0; i < createScript.length; i++) {
+//	                String sqlStatement = createScript[i].trim();
+//	            
+//	            if (sqlStatement.length() > 0) {
+//	                db.execSQL(sqlStatement + ";");
+//	            }
+//	        }
+//	    } catch (IOException e){
+//	        
+//	    } catch (SQLException e) {
+//	        
+//	    }
+//	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
-		// TODO Auto-generated method stub
+		// TODO Êý¾Ý¿âÉý¼¶
 		
 	}
 }

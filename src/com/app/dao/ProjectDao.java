@@ -28,9 +28,16 @@ public class ProjectDao {
 		db.execSQL("delete from project");
 	}
 	
-	public List<Project> getList() {  
+	public List<Project> getList(String dictCode) {  
         ArrayList<Project> arrProjs = new ArrayList<Project>();  
-        Cursor c = queryTheCursor();  
+        Cursor c;
+        
+        if (dictCode == null || dictCode.length() == 0){
+        	c = queryTheCursor();
+        }else{
+        	c = queryTheCursor(dictCode);
+        }
+        
         while (c.moveToNext()) {  
         	Project proj = new Project();  
             
@@ -44,6 +51,10 @@ public class ProjectDao {
         return arrProjs;  
     }
 	
+	public List<Project> getList() {  
+		return getList(null);
+	}
+	
 	/** 
      * query all Project, return cursor 
      * @return  Cursor 
@@ -52,4 +63,13 @@ public class ProjectDao {
         Cursor c = db.rawQuery("SELECT * FROM Project", null);  
         return c;  
     }  
+    
+    /** 
+     * query all Project, return cursor 
+     * @return  Cursor 
+     */  
+    public Cursor queryTheCursor(String dictCode) {  
+        Cursor c = db.rawQuery(String.format("SELECT * FROM Project where DictCode='%s'", dictCode), null);  
+        return c;  
+    }
 }

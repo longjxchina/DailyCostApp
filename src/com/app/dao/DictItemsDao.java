@@ -46,7 +46,7 @@ public class DictItemsDao {
         while (c.moveToNext()) {  
         	DictItems model = new DictItems();  
             
-        	model.DictItemId = c.getInt(c.getColumnIndex("DictItemId"));
+        	model.DictItemId = c.getInt(c.getColumnIndex("DictItemID"));
         	model.DictCode = c.getString(c.getColumnIndex("DictCode"));
         	model.ItemCode = c.getString(c.getColumnIndex("ItemCode"));
         	model.ItemName = c.getString(c.getColumnIndex("ItemName"));
@@ -70,7 +70,7 @@ public class DictItemsDao {
     		c = db.rawQuery("SELECT * FROM DictItems", null);    		
     	}
     	else{    	
-    		c = db.rawQuery(String.format("SELECT * FROM DictItems where DictCode='{0}'", dictCode), null);
+    		c = db.rawQuery(String.format("SELECT * FROM DictItems where DictCode='%s'", dictCode), null);
     	}
     	
         return c;  

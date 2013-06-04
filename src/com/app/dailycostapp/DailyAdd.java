@@ -1,5 +1,8 @@
 package com.app.dailycostapp;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.app.models.*;
@@ -7,20 +10,26 @@ import com.app.service.*;
 import com.app.util.Common;
 import com.app.util.CommonListAdapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+@SuppressLint("SimpleDateFormat")
 public class DailyAdd extends Activity implements OnClickListener {
+	@SuppressLint("SimpleDateFormat")
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	Calendar cal = Calendar.getInstance();
+	
 	protected Spinner spProject;
 	protected Spinner spTheme;
-	protected DatePicker dpAddDate;
+	protected EditText etForDate;
 	protected Spinner spFinanceType;
+	protected EditText etMoney;
 	protected EditText etRemark;
 	protected Button btnSave;
 	
@@ -30,8 +39,9 @@ public class DailyAdd extends Activity implements OnClickListener {
 		setContentView(R.layout.daily_add);
 		spProject = (Spinner)findViewById(R.id.spProject);
 		spTheme = (Spinner)findViewById(R.id.spTheme);
-		dpAddDate = (DatePicker)findViewById(R.id.dpAddDate);
+		etForDate = (EditText)findViewById(R.id.etForDate);
 		spFinanceType = (Spinner)findViewById(R.id.spFinanceType);
+		etMoney = (EditText)findViewById(R.id.etMoney);
 		etRemark = (EditText)findViewById(R.id.etRemark);
 		btnSave = (Button)findViewById(R.id.btnSave);
 	
@@ -46,6 +56,7 @@ public class DailyAdd extends Activity implements OnClickListener {
 		bindTheme();
 		bindFinanceType();
 		
+		etForDate.setText(sdf.format(cal.getTime()));		
 		btnSave.setOnClickListener(this);
 	}
 	
@@ -53,7 +64,7 @@ public class DailyAdd extends Activity implements OnClickListener {
 	 * 绑定财务类型
 	 */
 	private void bindFinanceType() {
-		List<DictItems> lstData = new DictItemsService(this).getList();
+		List<DictItems> lstData = new DictItemsService(this).getList(DictEnum.FinanceType.toString());
 		CommonListAdapter<DictItems> arrAdpt = new CommonListAdapter<DictItems>(this, lstData);		
 		spFinanceType.setAdapter(arrAdpt);
 	}
@@ -62,7 +73,7 @@ public class DailyAdd extends Activity implements OnClickListener {
 	 * 绑定常用花费名称
 	 */
 	private void bindTheme() {
-		List<DictItems> lstData = new DictItemsService(this).getList(Integer.toString(DictEnum.CommonTheme.ordinal()));
+		List<DictItems> lstData = new DictItemsService(this).getList(DictEnum.CommonTheme.toString());
 		CommonListAdapter<DictItems> arrAdpt = new CommonListAdapter<DictItems>(this, lstData);		
 		spTheme.setAdapter(arrAdpt);
 	}
@@ -96,7 +107,21 @@ public class DailyAdd extends Activity implements OnClickListener {
 	 */
 	private void saveDaily() {
 		Daily model = new Daily();
+		DailyService dailySvc = new DailyService(this);
+		SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
+		model.Theme = ((DictItems)spTheme.getSelectedItem()).ItemName;
+		model.Cost = Double.parseDouble(etMoney.getText().toString());
+		model.ForDate = etForDate.getText().toString();
+		model.FinanceType = Integer.parseInt(((DictItems)spFinanceType.getSelectedItem()).ItemValue);
 		model.ProjectId = ((Project)spProject.getSelectedItem()).Id;
+		model.Remark = etRemark.getText().toString();
+		model.CreateBy = "lxl";
+		model.LastUpdateBy = "lxl";
+		model.AddTime = dateFmt.format(new Date());
+		model.LastUpdateDate = dateFmt.format(new Date());
+		
+		dailySvc.add(model);
+		Common.showToastMsg(this, getString(R.string.save_success));
 	}
 }

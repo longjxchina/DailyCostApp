@@ -47,6 +47,10 @@ public class ProjectService {
 	}
 	
 	public List<Project> getList() {
-		return dao.getList();
+		return dao.getList(null);
+	}
+	
+	public List<Project> getList(String dictCode) {
+		return dao.getList(dictCode);
 	}
 }
