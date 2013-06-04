@@ -50,6 +50,10 @@ public class DictItemsService {
 	}
 	
 	public List<DictItems> getList() {
-		return dao.getList();
+		return dao.getList(null);
+	}
+	
+	public List<DictItems> getList(String dictCode) {
+		return dao.getList(dictCode);
 	}
 }

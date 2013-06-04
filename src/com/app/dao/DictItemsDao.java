@@ -29,8 +29,20 @@ public class DictItemsDao {
 	}
 	
 	public List<DictItems> getList() {  
+        return getList(null);
+    }
+
+	public List<DictItems> getList(String dictCode) {  
         ArrayList<DictItems> arrModel = new ArrayList<DictItems>();  
-        Cursor c = queryTheCursor();  
+        Cursor c; 
+        		
+        if (dictCode == null || dictCode.length() == 0){
+        	c = queryTheCursor();
+        }
+        else {
+        	c = queryTheCursor(dictCode);
+        }
+                		  
         while (c.moveToNext()) {  
         	DictItems model = new DictItems();  
             
@@ -51,8 +63,20 @@ public class DictItemsDao {
      * query all Model, return cursor 
      * @return  Cursor 
      */  
-    public Cursor queryTheCursor() {  
-        Cursor c = db.rawQuery("SELECT * FROM DictItems", null);  
+    public Cursor queryTheCursor(String dictCode) {
+    	Cursor c;
+    	
+    	if (dictCode == null){
+    		c = db.rawQuery("SELECT * FROM DictItems", null);    		
+    	}
+    	else{    	
+    		c = db.rawQuery(String.format("SELECT * FROM DictItems where DictCode='{0}'", dictCode), null);
+    	}
+    	
         return c;  
+    }
+    
+    public Cursor queryTheCursor() {
+    	return queryTheCursor(null);
     }
 }

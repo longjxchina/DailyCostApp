@@ -47,6 +47,15 @@ public class MainActivity extends Activity implements OnClickListener  {
 //		}
 //		
 //		arrAdpt.notifyDataSetChanged();
+//		com.app.dao.ProjectDao prodDao = new com.app.dao.ProjectDao(this);
+//		com.app.models.Project proj = new com.app.models.Project();
+//		proj.Id=3;
+//		proj.Name="测试数据3";
+//		com.app.models.Project proj2 = new com.app.models.Project();
+//		proj2.Id=4;
+//		proj2.Name="测试数据4";
+//		prodDao.add(proj);
+//		prodDao.add(proj2);
 		
 		ImageButton imgSyncBaseData = (ImageButton)findViewById(R.id.imgSyncBaseData);
 		ImageButton imgBtnNew = (ImageButton)findViewById(R.id.imgBtnAddDaily);
