@@ -7,31 +7,40 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" 
-    android:orientation="vertical">	    
-	<ImageButton
-        android:id="@+id/imgBtnAddDaily"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/add"
-        android:contentDescription="@string/daily_add" />
+    android:orientation="vertical">
 
-    <ImageButton
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageButton
+            android:id="@+id/imgBtnAddDaily"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:contentDescription="@string/daily_add"
+            android:src="@drawable/add" />
+        <ImageButton
         android:id="@+id/imgSyncBaseData"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:contentDescription="@string/sync_base_data"
         android:src="@drawable/reload" />
 
-    <ImageButton
-        android:id="@+id/imgBtnUpload"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/arrow_right"
-        android:contentDescription="@string/sync_daily" />	
-    
-    <ListView
-        android:id="@+id/lvToDo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-    </ListView>
+	    <ImageButton
+	        android:id="@+id/imgBtnUpload"
+	        android:layout_width="80dp"
+	        android:layout_height="80dp"
+	        android:src="@drawable/arrow_right"
+	        android:contentDescription="@string/sync_daily" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+	    <ListView
+	        android:id="@+id/lvDaily"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" >
+	    </ListView>
+    </LinearLayout>
 </LinearLayout>

@@ -53,4 +53,8 @@ public class ProjectService {
 	public List<Project> getList(String dictCode) {
 		return dao.getList(dictCode);
 	}
+
+	public void add(Project project) {
+		dao.add(project);		
+	}
 }

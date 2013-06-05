@@ -20,6 +20,13 @@ public class DictItemsService {
 		dao = new DictItemsDao(context);
 	}
 	
+	/*
+	 * 根据字典和值获取实体
+	 */
+	public DictItems getEntity(String dictCode, String itemValue){
+		return dao.getEntity(dictCode, itemValue);
+	}
+	
 	public JSONArray SyncDictItems(String url){
 		JSONArray arrJson = null; 
 		
@@ -55,5 +62,9 @@ public class DictItemsService {
 	
 	public List<DictItems> getList(String dictCode) {
 		return dao.getList(dictCode);
+	}
+
+	public void add(DictItems model) {
+		dao.add(model);		
 	}
 }

@@ -62,4 +62,12 @@ public class DailyService {
 		
 		return result;
 	}
+
+	public void delete(int id) {
+		dao.delete(id);		
+	}
+
+	public void update(Daily model) {
+		dao.update(model);		
+	}
 }

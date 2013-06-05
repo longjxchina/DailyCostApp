@@ -68,4 +68,17 @@ public class DailyDao {
         Cursor c = db.rawQuery("SELECT * FROM Daily", null);  
         return c;  
     }
+
+	public void update(Daily model) {
+		db.execSQL("update Daily set Theme=?,Cost=?,Remark=?,FinanceType=?,LastUpdateBy=?,LastUpdateDate=?,ForDate=?,ProjectId=? where id=?", 
+				new Object[]{model.Theme.replace("'", "''"),
+							 model.Cost,
+							 model.Remark.replace("'", "''"),
+							 model.FinanceType,
+							 model.CreateBy,
+							 model.LastUpdateBy,
+							 model.ForDate,
+							 model.ProjectId,
+							 model.Id});
+	}
 }

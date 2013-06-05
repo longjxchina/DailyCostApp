@@ -44,20 +44,25 @@ public class DictItemsDao {
         }
                 		  
         while (c.moveToNext()) {  
-        	DictItems model = new DictItems();  
-            
-        	model.DictItemId = c.getInt(c.getColumnIndex("DictItemID"));
-        	model.DictCode = c.getString(c.getColumnIndex("DictCode"));
-        	model.ItemCode = c.getString(c.getColumnIndex("ItemCode"));
-        	model.ItemName = c.getString(c.getColumnIndex("ItemName"));
-        	model.ItemValue = c.getString(c.getColumnIndex("ItemValue"));
-        	model.Remark = c.getString(c.getColumnIndex("Remark"));
+        	DictItems model = Row2Entity(c);
         	
         	arrModel.add(model);
         }  
         c.close();  
         return arrModel;  
     }
+
+	private DictItems Row2Entity(Cursor c) {
+		DictItems model = new DictItems();  
+		
+		model.DictItemId = c.getInt(c.getColumnIndex("DictItemID"));
+		model.DictCode = c.getString(c.getColumnIndex("DictCode"));
+		model.ItemCode = c.getString(c.getColumnIndex("ItemCode"));
+		model.ItemName = c.getString(c.getColumnIndex("ItemName"));
+		model.ItemValue = c.getString(c.getColumnIndex("ItemValue"));
+		model.Remark = c.getString(c.getColumnIndex("Remark"));
+		return model;
+	}
 	
 	/** 
      * query all Model, return cursor 
@@ -73,10 +78,22 @@ public class DictItemsDao {
     		c = db.rawQuery(String.format("SELECT * FROM DictItems where DictCode='%s'", dictCode), null);
     	}
     	
-        return c;  
+        return c;
     }
     
     public Cursor queryTheCursor() {
     	return queryTheCursor(null);
     }
+
+	public DictItems getEntity(String dictCode, String itemValue) {
+		Cursor c = db.rawQuery("select * from dictitems where dictcode=? and itemvalue=?", new String[]{dictCode,itemValue});
+		DictItems entity = null;
+		
+		while (c.moveToNext()) {
+			entity = this.Row2Entity(c);
+			break;
+		}
+		
+		return entity;
+	}
 }

@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity 
-            android:name="com.app.dailycostapp.DailyAdd"
+            android:name="com.app.dailycostapp.DailyEdit"
             android:label="@string/daily_add">          
         </activity>
             		

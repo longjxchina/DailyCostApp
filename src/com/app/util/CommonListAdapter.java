@@ -35,6 +35,16 @@ public class CommonListAdapter<T extends ListDataBinder> extends BaseAdapter {
 	public long getItemId(int position) {
 		return position;
 	}
+	
+	public int getPosition(String key){
+		for(T t : lstDataSource){
+			if (key.equals(t.getValue(context))){
+				return lstDataSource.indexOf(t);
+			}
+		}
+		
+		return -1;
+	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -45,8 +55,8 @@ public class CommonListAdapter<T extends ListDataBinder> extends BaseAdapter {
 		{
 			TextView tvText = (TextView)convertView.findViewById(R.id.tvText);
 			TextView tvValue =(TextView)convertView.findViewById(R.id.tvValue);
-			tvText.setText(lstDataSource.get(position).getText());
-			tvValue.setText(lstDataSource.get(position).getValue());
+			tvText.setText(lstDataSource.get(position).getText(context));
+			tvValue.setText(lstDataSource.get(position).getValue(context));
 		}
 		return convertView;
 	}

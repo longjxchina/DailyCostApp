@@ -1,5 +1,7 @@
 package com.app.models;
 
+import android.content.Context;
+
 import com.app.util.ListDataBinder;
 
 public class DictItems  implements ListDataBinder{
@@ -10,11 +12,11 @@ public class DictItems  implements ListDataBinder{
 	public String ItemValue;
 	public String Remark;
 	@Override
-	public String getText() {
+	public String getText(Context context) {
 		return this.ItemName;
 	}
 	@Override
-	public String getValue() {
+	public String getValue(Context context) {
 		return this.ItemValue;
 	}
 }
