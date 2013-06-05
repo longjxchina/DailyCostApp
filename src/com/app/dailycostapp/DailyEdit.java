@@ -160,6 +160,17 @@ public class DailyEdit extends Activity implements OnClickListener {
 		Daily model;
 		DailyService dailySvc = new DailyService(this);
 		SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String money = etMoney.getText().toString();
+		
+		if (money.length() == 0){
+			Common.showToastMsg(this, getString(R.string.money) + getString(R.string.empty_msg));
+			return;
+		}
+		
+		if (!money.matches("(\\d+\\.)?\\d+")){
+			Common.showToastMsg(this, getString(R.string.money) + getString(R.string.error_input_msg));
+			return;
+		}
 		
 		if (opType == GlobalConst.OP_TYPE_MODIFY){
 			model = modifyDailyEntity;
@@ -169,7 +180,7 @@ public class DailyEdit extends Activity implements OnClickListener {
 		}
 		
 		model.Theme = ((DictItems)spTheme.getSelectedItem()).ItemName;
-		model.Cost = Double.parseDouble(etMoney.getText().toString());
+		model.Cost = Double.parseDouble(money);
 		model.ForDate = etForDate.getText().toString();
 		model.FinanceType = Integer.parseInt(((DictItems)spFinanceType.getSelectedItem()).ItemValue);
 		model.ProjectId = ((Project)spProject.getSelectedItem()).Id;

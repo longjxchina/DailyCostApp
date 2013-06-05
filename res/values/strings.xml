@@ -8,6 +8,9 @@
 	<string name="sync_project_url">http://192.168.137.1:802/api/dailycostapi/getprojectlist</string>
 	<string name="sync_daily">http://192.168.137.1:802/api/dailycostapi/AddDaily</string>
 	
+	<string name="list">列表</string>
+	<string name="empty_msg">不能为空，请重新输入！</string>
+	<string name="error_input_msg">输入有误，请重新输入！</string>
 	<string name="sync_base_data">同步基础数据</string>	
 	<string name="sync_error">同步失败！</string>
 	<string name="sync_success">同步成功！</string>	

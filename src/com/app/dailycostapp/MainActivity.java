@@ -245,9 +245,7 @@ public class MainActivity extends Activity implements OnClickListener  {
 			Common.showToastMsg(this, "wifi未连接！");
 			return false;
 		}
-		else{
-			Common.showToastMsg(this, "wifi已连接！");	
-			return true;
-		}
+		
+		return true;
 	}
 }
