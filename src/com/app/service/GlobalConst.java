@@ -10,4 +10,7 @@ public class GlobalConst {
 	public static final int OP_TYPE_SHOW = 3;
 	public static final String OP_TYPE = "INTENT_OP_TYPE";
 	public static final String DAILY = "INTENT_DAILY";
+	
+	public static final int MESSAGE_SUCCESS = 1;
+	public static final int MESSAGE_ERROR = 0;
 }

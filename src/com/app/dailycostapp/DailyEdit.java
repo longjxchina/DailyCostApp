@@ -13,6 +13,7 @@ import com.app.util.DictItemsListAdapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 @SuppressLint("SimpleDateFormat")
@@ -42,11 +44,13 @@ public class DailyEdit extends Activity implements OnClickListener {
 	protected EditText etRemark;
 	protected Button btnSave;
 	protected Button btnCancel;
+	protected LinearLayout lnlOperate;
 	
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);		
-		setContentView(R.layout.daily_add);
+		setContentView(R.layout.daily_edit);
 		spProject = (Spinner)findViewById(R.id.spProject);
 		spTheme = (Spinner)findViewById(R.id.spTheme);
 		etForDate = (EditText)findViewById(R.id.etForDate);
@@ -55,7 +59,13 @@ public class DailyEdit extends Activity implements OnClickListener {
 		etRemark = (EditText)findViewById(R.id.etRemark);
 		btnSave = (Button)findViewById(R.id.btnSave);
 		btnCancel = (Button)findViewById(R.id.btnCancel);
+		lnlOperate = (LinearLayout)findViewById(R.id.lnlOperate);
 		opType = getIntent().getIntExtra(GlobalConst.OP_TYPE, GlobalConst.OP_TYPE_ADD);
+		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            // Show the Up button in the action bar.
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 	
 		initUI();		
 	}
@@ -108,7 +118,7 @@ public class DailyEdit extends Activity implements OnClickListener {
 		etForDate.setEnabled(false);
 		etMoney.setEnabled(false);
 		etRemark.setEnabled(false);
-		btnSave.setVisibility(View.INVISIBLE);
+		lnlOperate.setVisibility(View.GONE);
 	}
 
 	private void loadEntity() {

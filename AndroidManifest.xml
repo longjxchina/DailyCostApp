@@ -26,7 +26,10 @@
         </activity>
         <activity 
             android:name="com.app.dailycostapp.DailyEdit"
-            android:label="@string/daily_add">          
+            android:label="@string/daily_add"> 
+            <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.app.dailycostapp.MainActivity" />         
         </activity>
             		
     </application>

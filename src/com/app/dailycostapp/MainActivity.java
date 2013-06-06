@@ -3,7 +3,10 @@ package com.app.dailycostapp;
 import java.util.List;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -15,12 +18,11 @@ import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.app.dailycostapp.R;
 import com.app.models.Daily;
-import com.app.models.DictItems;
-import com.app.models.Project;
 import com.app.service.DailyService;
-import com.app.service.DictEnum;
 import com.app.service.DictItemsService;
 import com.app.service.DictService;
 import com.app.service.GlobalConst;
@@ -29,49 +31,35 @@ import com.app.util.Common;
 import com.app.util.CommonListAdapter;
 
 public class MainActivity extends Activity implements OnClickListener  {
-	ListView lvDaily;
-	CommonListAdapter<Daily> arrAdpt;
+	static ListView lvDaily;
+	static CommonListAdapter<Daily> arrAdpt;
+	static Context ctx;
 	DailyService dailySvc;
+	
+	static final Handler syncDataHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+
+			String result = msg.obj.toString();
+
+			if (Integer.parseInt(result) == GlobalConst.MESSAGE_SUCCESS) {
+				bindDaily();
+			}
+		}
+	}; 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
+		ctx = this;
 		dailySvc = new DailyService(this);
 		lvDaily = (ListView)findViewById(R.id.lvDaily);
-		
-		// bindDaily();		
+				
 		bindEvent();
 		
-		// TODO 列表的删除，数据修改
 		// buildTestData();
-	}
-
-	private void buildTestData() {
-		ProjectService projSvc = new ProjectService(this);
-		DictItemsService diService = new DictItemsService(this);
-		Project proj = new Project();
-		proj.Id = 2;
-		proj.Name="项目2";
-		
-		DictItems itemCommon = new DictItems();
-		DictItems itemFinance = new DictItems();
-		
-		itemCommon.DictItemId = 3;
-		itemCommon.DictCode = DictEnum.CommonTheme.toString();
-		itemCommon.ItemCode = "3";
-		itemCommon.ItemName = "常用2";
-		itemCommon.ItemValue = "3";
-		
-		itemFinance.DictItemId = 4;
-		itemFinance.DictCode = DictEnum.FinanceType.toString();
-		itemFinance.ItemCode = "4";
-		itemFinance.ItemName = "支出2";
-		itemFinance.ItemValue = "4";
-		projSvc.add(proj);
-		diService.add(itemCommon);
-		diService.add(itemFinance);
 	}
 
 	/*
@@ -101,11 +89,11 @@ public class MainActivity extends Activity implements OnClickListener  {
 	/*
 	 * 绑定列表数据
 	 */
-	private void bindDaily() {
-		DailyService dailySvc = new DailyService(this);
+	private static void bindDaily() {
+		DailyService dailySvc = new DailyService(ctx);
 		List<Daily> lstData = dailySvc.getList();
 		
-		arrAdpt = new CommonListAdapter<Daily>(this,
+		arrAdpt = new CommonListAdapter<Daily>(ctx,
 											lstData);		
 		lvDaily.setAdapter(arrAdpt);
 	}
@@ -133,19 +121,14 @@ public class MainActivity extends Activity implements OnClickListener  {
          switch (item.getItemId()) {       
               case GlobalConst.CONTEXTMENU_LOOKUP:
             	  editDaily(GlobalConst.OP_TYPE_SHOW, dailyModel);
-            	  // TODO 查看
                   return true; /* true means: "we handled the event". */       
               case GlobalConst.CONTEXTMENU_MODIFY:
             	  editDaily(GlobalConst.OP_TYPE_MODIFY, dailyModel);
-            	  // TODO 修改
                   return true; /* true means: "we handled the event". */
               case GlobalConst.CONTEXTMENU_DELETE:
-            	  //ArrayList<Music> musics = biz.getMusics();
-            	  //adapter.changeDataSet(musics);
             	  dailySvc.delete(dailyModel.Id);
-            	  Common.showToastMsg(this, getString(R.string.delete_success));
+            	  Common.showToastMsg(this, R.string.delete_success, Toast.LENGTH_SHORT);
             	  bindDaily();
-            	  // TODO 删除
                   return true; /* true means: "we handled the event". */
          }
          
@@ -183,12 +166,67 @@ public class MainActivity extends Activity implements OnClickListener  {
 		
 		Runnable access = new Runnable() {			
 			public void run() {
-				dailySvc.UpdateLoadData(syncUrl);
+				Message msg = syncDataHandler.obtainMessage();
+				try{
+					dailySvc.UpdateLoadData(syncUrl);
+					msg.obj = GlobalConst.MESSAGE_SUCCESS;
+					Common.showNonUIToastMsg(getApplicationContext(), R.string.sync_success, Toast.LENGTH_SHORT);
+				}
+				catch(Exception ex){
+					msg.obj = GlobalConst.MESSAGE_ERROR;
+					Common.showNonUIToastMsg(getApplicationContext(), R.string.sync_error, Toast.LENGTH_SHORT);
+				}
+				finally{
+					syncDataHandler.sendMessage(msg);
+				}
 			}
 		};
 		
+		Common.showToastMsg(this, R.string.sync_start);
 		new Thread(access).start();
 	}
+	
+	/*
+	 * 同步基础数据
+	 */
+	private void syncBaseData(){
+		final String dictUrl = this.getString(R.string.sync_dict_url);
+		final String dictItemsUrl = this.getString(R.string.sync_dict_items_url);
+		final String projectUrl = this.getString(R.string.sync_project_url);
+		final ProjectService projSvc = new ProjectService(this);
+		final DictService dictSvc = new DictService(this);
+		final DictItemsService dictItemsSvc = new DictItemsService(this);
+		
+		if (!noticeWifiStatus()){
+			return;
+		}
+		
+		Runnable access = new Runnable() {			
+			public void run() {
+				Message msg = syncDataHandler.obtainMessage();
+				
+				try {	
+					projSvc.SyncProject(projectUrl);
+					dictSvc.SyncDict(dictUrl);
+					dictItemsSvc.SyncDictItems(dictItemsUrl);
+					
+					msg.obj = GlobalConst.MESSAGE_SUCCESS;
+					Common.showNonUIToastMsg(getApplicationContext(), R.string.sync_success, Toast.LENGTH_SHORT);
+				}
+				catch(Exception ex){
+					msg.obj = GlobalConst.MESSAGE_ERROR;
+					Common.showNonUIToastMsg(getApplicationContext(), R.string.sync_error, Toast.LENGTH_SHORT);
+				}
+				finally{
+					syncDataHandler.sendMessage(msg);
+				}
+			}
+		};
+		
+		Common.showToastMsg(this, getString(R.string.sync_start), Toast.LENGTH_SHORT);
+		new Thread(access).start();		
+	}
+	
 
 	/*
 	 * 点击新增
@@ -206,40 +244,6 @@ public class MainActivity extends Activity implements OnClickListener  {
 		startActivity(intent);
 	}
 
-	/*
-	 * 同步基础数据
-	 */
-	private void syncBaseData(){
-		final String dictUrl = this.getString(R.string.sync_dict_url);
-		final String dictItemsUrl = this.getString(R.string.sync_dict_items_url);
-		final String projectUrl = this.getString(R.string.sync_project_url);
-		final ProjectService projSvc = new ProjectService(this);
-		final DictService dictSvc = new DictService(this);
-		final DictItemsService dictItemsSvc = new DictItemsService(this);
-		//final Context ctx = this;
-		
-		if (!noticeWifiStatus()){
-			return;
-		}
-		
-		Runnable access = new Runnable() {			
-			public void run() {
-				try {	
-					projSvc.SyncProject(projectUrl);
-					dictSvc.SyncDict(dictUrl);
-					dictItemsSvc.SyncDictItems(dictItemsUrl);
-					
-					//Common.showToastMsg(ctx, ctx.getString(R.string.sync_success));
-				}
-				catch(Exception ex){
-					//Common.showToastMsg(ctx, ctx.getString(R.string.sync_error));
-				}
-			}
-		};
-		
-		new Thread(access).start();		
-	}
-	
 	private boolean noticeWifiStatus() {
 		if (!Common.isConnectedWifi(this)){
 			Common.showToastMsg(this, "wifi未连接！");

@@ -3,6 +3,7 @@ package com.app.util;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Looper;
 import android.widget.Toast;
 
 /*
@@ -23,6 +24,28 @@ public class Common {
 	}
 	
 	public static void showToastMsg(Context context, String msg){
-		Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+		showToastMsg(context, msg, Toast.LENGTH_LONG);
+	}
+	
+	public static void showToastMsg(Context context, String msg, int remainTime){
+		Toast.makeText(context, msg, remainTime).show();
+	}
+	
+	public static void showToastMsg(Context context, int resId){
+		showToastMsg(context, resId, Toast.LENGTH_LONG);
+	}
+	
+	public static void showToastMsg(Context context, int resId, int remainTime){
+		Toast.makeText(context, resId, remainTime).show();
+	}
+	
+	public static void showNonUIToastMsg(Context context, int resId){
+		showNonUIToastMsg(context, resId, Toast.LENGTH_LONG);
+	}
+	
+	public static void showNonUIToastMsg(Context context, int resId, int remainTime){
+		Looper.prepare();
+		Toast.makeText(context, resId, remainTime).show();
+		Looper.loop();
 	}
 }

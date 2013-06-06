@@ -13,6 +13,7 @@
 	<string name="error_input_msg">输入有误，请重新输入！</string>
 	<string name="sync_base_data">同步基础数据</string>	
 	<string name="sync_error">同步失败！</string>
+	<string name="sync_start">开始同步&#8230;</string>
 	<string name="sync_success">同步成功！</string>	
 	<string name="save_success">保存成功！</string>
 	<string name="delete_success">删除成功！</string>
