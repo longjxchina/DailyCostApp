@@ -35,7 +35,7 @@ public class Common {
 		showToastMsg(context, resId, Toast.LENGTH_LONG);
 	}
 	
-	public static void showToastMsg(Context context, int resId, int remainTime){
+	public static void showToastMsg(Context context, int resId, int remainTime){		
 		Toast.makeText(context, resId, remainTime).show();
 	}
 	

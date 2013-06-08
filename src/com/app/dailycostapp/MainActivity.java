@@ -13,10 +13,10 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
+import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ImageButton;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -30,9 +30,9 @@ import com.app.service.ProjectService;
 import com.app.util.Common;
 import com.app.util.CommonListAdapter;
 
-public class MainActivity extends Activity implements OnClickListener  {
+public class MainActivity extends Activity  {
 	static ListView lvDaily;
-	static CommonListAdapter<Daily> arrAdpt;
+	static CommonListAdapter<Daily> dailyAdpt;
 	static Context ctx;
 	DailyService dailySvc;
 	
@@ -66,14 +66,6 @@ public class MainActivity extends Activity implements OnClickListener  {
 	 * 绑定事件处理程序
 	 */
 	public void bindEvent() {
-		ImageButton imgSyncBaseData = (ImageButton)findViewById(R.id.imgSyncBaseData);
-		ImageButton imgBtnNew = (ImageButton)findViewById(R.id.imgBtnAddDaily);
-		ImageButton imgBtnUpload = (ImageButton)findViewById(R.id.imgBtnUpload);
-		
-		imgSyncBaseData.setOnClickListener(this);
-		imgBtnNew.setOnClickListener(this);
-		imgBtnUpload.setOnClickListener(this);
-		
 		/* Add Context-Menu listener to the ListView. */       
         lvDaily.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
 			@Override
@@ -84,6 +76,14 @@ public class MainActivity extends Activity implements OnClickListener  {
 				ctxMenu.add(0, GlobalConst.CONTEXTMENU_DELETE, 3, R.string.delete);
 			}
         }); 
+        
+        lvDaily.setOnItemClickListener(new OnItemClickListener() {  
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {  
+                Daily dailyModel = (Daily)dailyAdpt.getItem(position);
+                
+                editDaily(GlobalConst.OP_TYPE_SHOW, dailyModel);
+            }  
+        });  
 	}
 
 	/*
@@ -93,9 +93,9 @@ public class MainActivity extends Activity implements OnClickListener  {
 		DailyService dailySvc = new DailyService(ctx);
 		List<Daily> lstData = dailySvc.getList();
 		
-		arrAdpt = new CommonListAdapter<Daily>(ctx,
+		dailyAdpt = new CommonListAdapter<Daily>(ctx,
 											lstData);		
-		lvDaily.setAdapter(arrAdpt);
+		lvDaily.setAdapter(dailyAdpt);
 	}
 	
 	@Override
@@ -110,12 +110,31 @@ public class MainActivity extends Activity implements OnClickListener  {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
-	}	
+	}
+	
+	@Override  
+    public boolean onOptionsItemSelected(MenuItem item)  
+    {  
+        switch (item.getItemId())  
+        {  
+        case R.id.itemDailyAdd:  
+        	editDaily(GlobalConst.OP_TYPE_ADD, null);
+            break;  
+        case R.id.itemSyncBaseData:
+        	syncBaseData();
+        	break;
+        case R.id.itemUploadDaily:
+        	uploadData();
+        	break;
+        }  
+        
+        return true;
+    } 
 	
 	@Override       
     public boolean onContextItemSelected(MenuItem item) {       
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
-		Daily dailyModel = (Daily)arrAdpt.getItem(info.position);
+		Daily dailyModel = (Daily)dailyAdpt.getItem(info.position);
       
          /* Switch on the ID of the item, to get what the user selected. */       
          switch (item.getItemId()) {       
@@ -133,35 +152,17 @@ public class MainActivity extends Activity implements OnClickListener  {
          }
          
          return false;       
-    }       
-	
-	/*
-	 * 绑定点击事件
-	 * @see android.view.View.OnClickListener#onClick(android.view.View)
-	 */
-	public void onClick(View v) {
-		switch(v.getId()){
-			case R.id.imgSyncBaseData:
-				syncBaseData();
-				break;
-			case R.id.imgBtnAddDaily:
-				editDaily(GlobalConst.OP_TYPE_ADD, null);
-				break;
-			case R.id.imgBtnUpload:
-				UploadData();
-				break;
-		}
-	}
+    }
 	
 	/*
 	 * 上传Daily到服务器
 	 */
-	private void UploadData() {
+	private void uploadData() {
 		final String syncUrl = this.getString(R.string.sync_daily);
 		final DailyService dailySvc = new DailyService(this);
 		
 		if (!noticeWifiStatus()){
-			return;
+			// return;
 		}
 		
 		Runnable access = new Runnable() {			
@@ -170,19 +171,18 @@ public class MainActivity extends Activity implements OnClickListener  {
 				try{
 					dailySvc.UpdateLoadData(syncUrl);
 					msg.obj = GlobalConst.MESSAGE_SUCCESS;
-					Common.showNonUIToastMsg(getApplicationContext(), R.string.sync_success, Toast.LENGTH_SHORT);
+					syncDataHandler.sendMessage(msg);
+					Common.showNonUIToastMsg(getApplicationContext(), R.string.sync_success, Toast.LENGTH_SHORT);					
 				}
 				catch(Exception ex){
 					msg.obj = GlobalConst.MESSAGE_ERROR;
-					Common.showNonUIToastMsg(getApplicationContext(), R.string.sync_error, Toast.LENGTH_SHORT);
-				}
-				finally{
 					syncDataHandler.sendMessage(msg);
+					Common.showNonUIToastMsg(getApplicationContext(), R.string.sync_error, Toast.LENGTH_SHORT);					
 				}
 			}
 		};
 		
-		Common.showToastMsg(this, R.string.sync_start);
+		Common.showToastMsg(this, R.string.sync_start, Toast.LENGTH_SHORT);
 		new Thread(access).start();
 	}
 	
@@ -198,7 +198,7 @@ public class MainActivity extends Activity implements OnClickListener  {
 		final DictItemsService dictItemsSvc = new DictItemsService(this);
 		
 		if (!noticeWifiStatus()){
-			return;
+			// return;
 		}
 		
 		Runnable access = new Runnable() {			
@@ -246,7 +246,7 @@ public class MainActivity extends Activity implements OnClickListener  {
 
 	private boolean noticeWifiStatus() {
 		if (!Common.isConnectedWifi(this)){
-			Common.showToastMsg(this, "wifi未连接！");
+			Common.showToastMsg(this, "wifi未连接！", Toast.LENGTH_SHORT);
 			return false;
 		}
 		

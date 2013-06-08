@@ -1,9 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:id="@+id/itemDailyAdd"
+        android:icon="@drawable/add"
+        android:orderInCategory="1"
+        android:showAsAction="always"
+        android:title="@string/daily_add"/>
+    <item
+        android:id="@+id/itemSyncBaseData"
+        android:icon="@drawable/reload"
+        android:orderInCategory="1"
+        android:showAsAction="always"
+        android:title="@string/sync_base_data"/>
+    <item
+        android:id="@+id/itemUploadDaily"
+        android:icon="@drawable/arrow_up"
+        android:orderInCategory="1"
+        android:showAsAction="always"
+        android:title="@string/sync_daily_to_server"/>
 
 </menu>

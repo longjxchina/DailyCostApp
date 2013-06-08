@@ -1,51 +1,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity" 
-    android:orientation="vertical">
+    tools:context=".MainActivity" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <ImageButton
-            android:id="@+id/imgBtnAddDaily"
-            android:layout_width="50dp"
-            android:layout_height="42dp"
-            android:contentDescription="@string/daily_add"
-            android:src="@drawable/add" />
-        <ImageButton
-        android:id="@+id/imgSyncBaseData"
-        android:layout_width="50dp"
-        android:layout_height="42dp"
-        android:contentDescription="@string/sync_base_data"
-        android:src="@drawable/reload" />
-	    <ImageButton
-	        android:id="@+id/imgBtnUpload"
-	        android:layout_width="50dp"
-	        android:layout_height="42dp"
-	        android:src="@drawable/arrow_up"
-	        android:contentDescription="@string/sync_daily" />
-    </LinearLayout>    
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="15dp" >
-	    <TextView
+    <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/list" />
-	    <ListView
-	        android:id="@+id/lvDaily"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content" >
-	    </ListView>
-    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lvDaily"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
+
 </LinearLayout>
