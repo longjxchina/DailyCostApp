@@ -85,7 +85,7 @@ public class RemoteDataHelper {
 			result = retrieveInputStream(httpResponse.getEntity());
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage());
-			throw new Exception(e);
+			throw e;
 		} finally {
 			getMethod.abort();
 		}

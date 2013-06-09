@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,7 +50,10 @@ public class DailyEdit extends Activity implements OnClickListener {
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
-		super.onCreate(savedInstanceState);		
+		super.onCreate(savedInstanceState);
+		
+		opType = getIntent().getIntExtra(GlobalConst.OP_TYPE, GlobalConst.OP_TYPE_ADD);
+		setTitleAndActionBar();
 		setContentView(R.layout.daily_edit);
 		spProject = (Spinner)findViewById(R.id.spProject);
 		spTheme = (Spinner)findViewById(R.id.spTheme);
@@ -59,14 +63,8 @@ public class DailyEdit extends Activity implements OnClickListener {
 		etRemark = (EditText)findViewById(R.id.etRemark);
 		btnSave = (Button)findViewById(R.id.btnSave);
 		btnCancel = (Button)findViewById(R.id.btnCancel);
-		lnlOperate = (LinearLayout)findViewById(R.id.lnlOperate);
-		opType = getIntent().getIntExtra(GlobalConst.OP_TYPE, GlobalConst.OP_TYPE_ADD);
+		lnlOperate = (LinearLayout)findViewById(R.id.lnlOperate);		
 		
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            // Show the Up button in the action bar.
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-	
 		initUI();		
 	}
 	
@@ -79,6 +77,21 @@ public class DailyEdit extends Activity implements OnClickListener {
         }
         return super.onOptionsItemSelected(item);
     }
+
+	private void setTitleAndActionBar() {
+		if (opType == GlobalConst.OP_TYPE_ADD || opType == GlobalConst.OP_TYPE_MODIFY){
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+			// getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+			// ActionBar actionBar =getActionBar();
+			// actionBar.hide();
+		}
+		else{
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+	            // Show the Up button in the action bar.
+	            getActionBar().setDisplayHomeAsUpEnabled(true);
+	        }
+		}
+	}
 
 	/*
 	 * ≥ı ºªØ
@@ -99,7 +112,7 @@ public class DailyEdit extends Activity implements OnClickListener {
 		switch(opType){
 			case GlobalConst.OP_TYPE_ADD:
 				break;
-			case GlobalConst.OP_TYPE_MODIFY:
+			case GlobalConst.OP_TYPE_MODIFY:				
 				loadEntity();
 				break;
 			case GlobalConst.OP_TYPE_SHOW:
@@ -186,11 +199,13 @@ public class DailyEdit extends Activity implements OnClickListener {
 		
 		if (money.length() == 0){
 			Common.showToastMsg(this, getString(R.string.money) + getString(R.string.empty_msg));
+			etMoney.requestFocus();
 			return;
 		}
 		
 		if (!money.matches("(\\d+\\.)?\\d+")){
 			Common.showToastMsg(this, getString(R.string.money) + getString(R.string.error_input_msg));
+			etMoney.requestFocus();
 			return;
 		}
 		

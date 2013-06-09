@@ -27,7 +27,7 @@ public class DailyService {
 		dao.add(model);
 	}
 	
-	public boolean UpdateLoadData(String syncUrl){
+	public boolean updateLoadData(String syncUrl) throws Exception{
 		List<Daily> lstData = dao.getList();
 		ArrayList<NameValuePair> data;
 		
@@ -48,15 +48,10 @@ public class DailyService {
 			data.add(new BasicNameValuePair("ForDate", model.ForDate));
 			data.add(new BasicNameValuePair("ProjectId", Integer.toString(model.ProjectId)));
 			
-			try{
-				String returnData = RemoteDataHelper.postRequest(syncUrl, data);
-				
-				if ("true".equals(returnData)){
-					dao.delete(model.Id);
-				}
-			}
-			catch(Exception ex){
-				result = false;
+			String returnData = RemoteDataHelper.postRequest(syncUrl, data);
+			
+			if ("true".equals(returnData)){
+				dao.delete(model.Id);
 			}
 		}
 		

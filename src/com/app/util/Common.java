@@ -48,4 +48,10 @@ public class Common {
 		Toast.makeText(context, resId, remainTime).show();
 		Looper.loop();
 	}
+
+	public static void showNonUIToastMsg(Context applicationContext, String errorMsg, int lengthShort) {
+		Looper.prepare();
+		Toast.makeText(applicationContext, errorMsg, lengthShort).show();
+		Looper.loop();
+	}
 }
